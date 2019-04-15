@@ -9,15 +9,16 @@ type resolver struct {
 	function interface{}
 }
 
-func (r *resolver) hasArguments() bool {
-	return reflect.TypeOf(r.function).NumIn() == 1
+func (r *resolver) countArguments() int {
+	return reflect.TypeOf(r.function).NumIn()
 }
 
-func (r *resolver) call(p json.RawMessage) (interface{}, error) {
+func (r *resolver) call(p json.RawMessage, identity Identity) (interface{}, error) {
 	var args []reflect.Value
 	var err error
+	var returnValues []reflect.Value
 
-	if r.hasArguments() {
+	if r.countArguments() > 0 {
 		pld := payload{p}
 		args, err = pld.parse(reflect.TypeOf(r.function).In(0))
 
@@ -26,7 +27,13 @@ func (r *resolver) call(p json.RawMessage) (interface{}, error) {
 		}
 	}
 
-	returnValues := reflect.ValueOf(r.function).Call(args)
+	if r.countArguments() > 1 {
+		var identityValue = reflect.ValueOf(identity)
+		args = append(args, identityValue)
+	}
+
+	returnValues = reflect.ValueOf(r.function).Call(args)
+
 	var returnData interface{}
 	var returnError error
 

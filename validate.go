@@ -28,14 +28,14 @@ var validators = validateList{
 		return nil
 	},
 	func(h reflect.Type) error {
-		if num := h.NumIn(); num > 1 {
-			return fmt.Errorf("Resolver must not have more than one argument, got %v", num)
+		if num := h.NumIn(); num > 2 {
+			return fmt.Errorf("Resolver must not have more than two arguments, got %v", num)
 		}
 
 		return nil
 	},
 	func(h reflect.Type) error {
-		if h.NumIn() == 1 && h.In(0).Kind() != reflect.Struct {
+		if h.NumIn() > 0 && h.In(0).Kind() != reflect.Struct {
 			return errors.New("Resolver argument must be struct")
 		}
 
