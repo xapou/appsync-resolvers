@@ -37,7 +37,7 @@ func (r *resolver) call(c context) (interface{}, error) {
 	parameters = append(parameters, arguments)
 
 	if r.countArguments() == 2 {
-		identity, err = apld.parse(reflect.TypeOf(r.function).In(1))
+		identity, err = ipld.parse(reflect.TypeOf(r.function).In(1))
 		if err != nil {
 			return nil, fmt.Errorf("Failed to parse Identity. %v", err.Error())
 		}
